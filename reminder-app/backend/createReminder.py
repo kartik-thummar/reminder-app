@@ -1,3 +1,4 @@
-from boto3 import session
+from Utils import DYNAMODB_CLIENT
 
-Session = session()
+def create_reminder(event, context):
+    pass
