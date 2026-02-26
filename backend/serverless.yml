@@ -10,5 +10,6 @@ provider:
   runtime: python3.14
 
 functions:
-  hello:
+  ReminderCreate:
     handler: createReminder.create_reminder
+
