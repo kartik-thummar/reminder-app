@@ -1,15 +1,52 @@
 org: informotive
 app: reminder-app
-service: my-service
 service: Reminder-app
 
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 provider:
   name: aws
   runtime: python3.14
+  region: us-east-1
+  environment: 
+    REMINDERS_TABLE: Reminders
+  iam:
+    role:
+      name: reminder-app
+      path: /reminder-app/
+      managedPolicies:
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
 
 functions:
   ReminderCreate:
-    handler: createReminder.create_reminder
+    handler: createReminder.lambda_handler
+    layers: 
+      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:boto3-stubs-dynamodb:1
+      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:aws-lambda-powertools-3_24_0:1
+    events:
+      - http:
+          path: /reminders
+          method: POST
 
+resources:
+
+  Resources:
+
+    RemindersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REMINDERS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: reminderId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: reminderId
+            KeyType: HASH
+          - AttributeName: userId
+            KeyType: RANGE
+        TimeToLiveSpecification:
+          AttributeName: reminderAt
+          Enabled: true 
