@@ -4,29 +4,39 @@ from mypy_boto3_dynamodb.type_defs import PutItemInputTablePutItemTypeDef
 from uuid import uuid4
 from datetime import datetime, timezone
 
+app = APIGatewayRestResolver()
 
-def create_reminder(event: APIGatewayRestResolver, context):
-
-    if event.current_event.json_body is None:
+@app.post("/reminders")
+def create_reminder():
+    
+    if app.current_event.json_body is None:
         pass
 
-    print(type(event.current_event.raw_event))
-    print(event.current_event.raw_event)
+    print(app.current_event.raw_event)
 
-    body = event.current_event.json_body
-    print(type(body))
+    body = app.current_event.json_body
     print(body)
 
     response: PutItemInputTablePutItemTypeDef = DYNAMODB_CLIENT.put_item(
         TableName=DYNAMODB_TASK_TABLE,
         Item={
-            "reminderId":   {"S": uuid4()},             # Primary Key
-            "userId":       {"S": body['userId']},      # Secondary Key
+            "reminderId":   {"S": str(uuid4())},             # Primary Key
+            "userId":       {"S": body['userId']},           # Secondary Key
             "message":      {"S": body['message']},
-            "dateTime":     {"N": str(datetime.now(timezone.utc))},
+            "createdAt":    {"N": str(datetime.now(timezone.utc).timestamp())},
+            "reminderAt":   {"N": str(datetime.now(timezone.utc).timestamp())},
         }
         )
     
     print(response)
 
-    return Responses.success_response(response)
+    # return Responses.success_response({"message":"reminder successfully created", "response": response})
+    return Response(
+        status_code=200, 
+        body={"message":"reminder successfully created", "response": response},
+        headers={"Content-Type": "application/json", "CORS": "*"}
+        )
+
+
+def lambda_handler(event: dict, context):
+    return app.resolve(event, context)

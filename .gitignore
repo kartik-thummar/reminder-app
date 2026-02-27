@@ -1,5 +1,6 @@
 # Distribution / packaging
 .Python
+python/
 *.venv/
 build/
 develop-eggs/
