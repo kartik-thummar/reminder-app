@@ -10,23 +10,38 @@ provider:
   region: us-east-1
   environment: 
     REMINDERS_TABLE: Reminders
+    SENDER_EMAIL_ID: kthummar786@gmail.com
   iam:
     role:
       name: reminder-app
       path: /reminder-app/
       managedPolicies:
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
 
 functions:
   ReminderCreate:
     handler: createReminder.lambda_handler
     layers: 
-      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:boto3-stubs-dynamodb:1
+      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:boto3-stubs-dynamodb-ses_1_42_62:1
       - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:aws-lambda-powertools-3_24_0:1
     events:
       - http:
           path: /reminders
           method: POST
+
+  ReminderNotification:
+    handler: reminderNotification.reminder_notification
+    layers:
+      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:boto3-stubs-dynamodb-ses_1_42_62:1
+      - arn:aws:lambda:${aws:region}:${aws:accountId}:layer:aws-lambda-powertools-3_24_0:1
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - RemindersTable
+              - StreamArn
 
 resources:
 
@@ -49,4 +64,6 @@ resources:
             KeyType: RANGE
         TimeToLiveSpecification:
           AttributeName: reminderAt
-          Enabled: true 
+          Enabled: true
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
