@@ -1,6 +1,7 @@
 # Distribution / packaging
 .Python
 *pycache*/
+*.pytest_cache*/
 python/
 *.venv/
 build/
