@@ -1,5 +1,6 @@
 # Distribution / packaging
 .Python
+*pycache*/
 python/
 *.venv/
 build/
