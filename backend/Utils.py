@@ -14,12 +14,29 @@ SES_CLIENT: SESClient = SESSION.client(service_name="ses", region_name=REGION)
 
 DYNAMODB_TASK_TABLE = environ['REMINDERS_TABLE']
 
-class Responses():
+_HEADERS = {"Content-Type": "application/json", "CORS": "*"}
 
-    @classmethod
-    def success_response(cls, body: dict) -> dict :
-        return {
-            "statusCode": HTTPStatus.OK, 
-            "headers": {"Content-Type": "application/json", "CORS": "*"},
-            "body": json.dumps(body)
-            }
+def success_response(body: dict) -> dict :
+    return {
+        "statusCode": HTTPStatus.OK,
+        "headers": _HEADERS,
+        "body": json.dumps(body)
+        }
+
+def error_response(body: dict) -> dict :
+    return {
+        "statusCode": HTTPStatus.INTERNAL_SERVER_ERROR,
+        "headers": _HEADERS,
+        "body": json.dumps(body)
+    }
+
+
+# class Responses():
+
+#     @classmethod
+#     def success_response(cls, body: dict) -> dict :
+#         return {
+#             "statusCode": HTTPStatus.OK, 
+#             "headers": {"Content-Type": "application/json", "CORS": "*"},
+#             "body": json.dumps(body)
+#             }

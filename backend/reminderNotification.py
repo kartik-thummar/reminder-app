@@ -1,6 +1,6 @@
 from mypy_boto3_ses.type_defs import SendEmailResponseTypeDef
 from aws_lambda_powertools.utilities.data_classes import DynamoDBStreamEvent, event_source
-from Utils import SES_CLIENT
+from Utils import SES_CLIENT, success_response
 from os import environ
 
 SENDER_EMAIL_ID = environ["SENDER_EMAIL_ID"]
@@ -40,33 +40,7 @@ def reminder_notification(event: DynamoDBStreamEvent, context):
 
                 print(response)
 
-    # for record in event["Records"]:
-    #     if record["eventName"] == "REMOVE":
-    #         user_identity = record.get("userIdentity", {})
-    #         if user_identity.get("type") == "Service":
-
-    #             old_image = record["dynamodb"]["OldImage"]
-
-    #             user_email = old_image["userId"]["S"]
-    #             message = old_image["message"]["S"]
-
-    #             response: SendEmailResponseTypeDef = SES_CLIENT.send_email(
-    #                     Source=SENDER_EMAIL_ID,
-    #                     Destination={
-    #                         "ToAddresses": [user_email],
-    #                     },
-    #                     Message={
-    #                         "Subject": {"Data": "Your reminder" , "Charset": "UTF-8"},
-    #                         "Body": {
-    #                             "Text": {
-    #                                 "Data": message,
-    #                                 "Charset": "UTF-8"
-    #                             },
-    #                         },
-    #                     },
-    #                 )
-
-    #             print(response)
+    return success_response({"message": "Email sent successfully"})
 
 # Event data
 {
