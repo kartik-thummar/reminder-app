@@ -1,6 +1,6 @@
 from Utils import DYNAMODB_CLIENT, DYNAMODB_TASK_TABLE
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver, Response
-from mypy_boto3_dynamodb.type_defs import PutItemInputTablePutItemTypeDef
+from mypy_boto3_dynamodb.type_defs import PutItemInputTablePutItemTypeDef, ScanInputTableScanTypeDef
 from uuid import uuid4
 from datetime import datetime, timezone, timedelta
 
@@ -48,6 +48,25 @@ def create_reminder():
         body={"message":"reminder successfully created", "response": response},
         headers={"Content-Type": "application/json", "CORS": "*"}
         )
+
+
+@app.get("/reminders")
+def list_reminders():
+
+    body = app.current_event.json_body
+
+    response: ScanInputTableScanTypeDef = DYNAMODB_CLIENT.scan(
+        TableName=DYNAMODB_TASK_TABLE
+    )
+
+    print(response)
+
+    return Response(
+        status_code=200,
+        body={"message": "Reminders data fetched successfully", "response": response},
+        headers={"Content-Type": "application/json", "CORS": "*"}
+    )
+    
 
 
 def lambda_handler(event: dict, context):
