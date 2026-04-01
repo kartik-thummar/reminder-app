@@ -37,4 +37,4 @@ jobs:
       #   run: npm install || true
 
       - name: Deploy
-        run: serverless deploy --stage dev
+        run: serverless deploy --config backend/serverless.yml --stage dev
