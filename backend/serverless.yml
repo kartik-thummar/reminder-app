@@ -10,7 +10,7 @@ provider:
   region: us-east-1
   environment: 
     REMINDERS_TABLE: Reminders
-    SENDER_EMAIL_ID: kthummar786@gmail.com
+    SENDER_EMAIL_ID: SENDER_EMAIL_ID
   iam:
     role:
       name: reminder-app
