@@ -42,38 +42,4 @@ def reminder_notification(event: DynamoDBStreamEvent, context):
 
     return success_response({"message": "Email sent successfully"})
 
-# Event data
-{
-    "Records": [
-        {
-            "eventID": "7b60ece399848fce02a53ca43e9bb8d9",
-            "eventName": "REMOVE",
-            "eventVersion": "1.1",
-            "eventSource": "aws:dynamodb",
-            "awsRegion": "us-east-1",
-            "dynamodb": {
-                "ApproximateCreationDateTime": 1772791961.0,
-                "Keys": {
-                    "reminderId": {"S": "55ee4899-e749-4b0a-98bd-ec6283aa6c42"},
-                    "userId": {"S": "kthummar786@gmail.com"},
-                },
-                "OldImage": {
-                    "createdAt": {"N": "1772791039.314835"},
-                    "reminderId": {"S": "55ee4899-e749-4b0a-98bd-ec6283aa6c42"},
-                    "message": {"S": "Test Message"},
-                    "reminderAt": {"N": "1772791200"},
-                    "userId": {"S": "kthummar786@gmail.com"},
-                },
-                "SequenceNumber": "36922500002170499542653000",
-                "SizeBytes": 204,
-                "StreamViewType": "NEW_AND_OLD_IMAGES",
-            },
-            "userIdentity": {
-                "principalId": "dynamodb.amazonaws.com",
-                "type": "Service",
-            },
-            "eventSourceARN": "arn:aws:dynamodb:us-east-1:632598605203:table/Reminders/stream/2026-03-02T15:07:33.607",
-        }
-    ]
-}
 

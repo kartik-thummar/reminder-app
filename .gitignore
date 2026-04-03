@@ -1,5 +1,6 @@
 # Distribution / packaging
 .Python
+/backend/tests/.test_data/
 *pycache*/
 *.pytest_cache*/
 python/
